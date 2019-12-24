@@ -11,15 +11,23 @@ import UIKit
 let selectCellIdentifier = "SelectCellIdentifier"
 
 class SelectViewController: UIViewController {
+    let tmpMutArr: NSMutableArray = NSMutableArray()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.view.backgroundColor = .green
-
+        
         let mainView = SelectView(frame: self.view.bounds)
         mainView.addTouchClosure = {
             let seekViewController = SeekViewController()
+            seekViewController.dicColsure = {
+                (tmpDic) -> () in
+                print("SDSDSDSDSD")
+                print(tmpDic)
+                self.tmpMutArr.add(tmpDic)
+                mainView.selectTableView.reloadData()
+            }
             self.present(seekViewController, animated: false, completion: nil)
         }
         self.view = mainView
@@ -28,26 +36,24 @@ class SelectViewController: UIViewController {
         mainView.selectTableView.delegate = self;
         mainView.selectTableView.dataSource = self;
 
-        mainView.selectTableView.register(UITableViewCell.self, forCellReuseIdentifier:selectCellIdentifier)
+        mainView.selectTableView.register(SelectTableViewCell.self, forCellReuseIdentifier:selectCellIdentifier)
         
     }
 }
 
 extension SelectViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return tmpMutArr.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: selectCellIdentifier)
-        cell?.backgroundColor = UIColor.init(white: 0, alpha: 0.55)
-        cell?.textLabel?.text = "JKWJKJWKJWKJWKJWKJWKJWKW测试数据\(indexPath.row)"
-        cell?.textLabel?.textColor = .white
-        return cell!
+        let cell: SelectTableViewCell = tableView.dequeueReusableCell(withIdentifier: selectCellIdentifier, for: indexPath) as! SelectTableViewCell
+        cell.updataData(resDic: tmpMutArr[indexPath.row] as! [String : String])
+        return cell
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return kDeviceHeight * 0.1175
     }
 
    

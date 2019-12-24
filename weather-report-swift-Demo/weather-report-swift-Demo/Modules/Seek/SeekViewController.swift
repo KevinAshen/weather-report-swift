@@ -7,9 +7,11 @@
 //
 
 import UIKit
+typealias DicColsure = ([String : String]) -> ()
 
 class SeekViewController: UIViewController, UISearchBarDelegate {
     let topSearchBar: UISearchBar = UISearchBar()
+    var dicColsure: DicColsure? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .red
@@ -19,8 +21,15 @@ class SeekViewController: UIViewController, UISearchBarDelegate {
         mainView.touchStr = {
             (str: String) -> () in
             let share = Manager.shared()
-            share.getWeather(str: str)
-            self.dismiss(animated: false, completion: nil)
+            share.fetchLatestWeather(str: str) { (resDic) in
+                print(resDic)
+                DispatchQueue.main.async {
+                    self.dismiss(animated: false) {
+                        self.dicColsure!(resDic)
+                    }
+                }
+
+            }
         }
     }
     
