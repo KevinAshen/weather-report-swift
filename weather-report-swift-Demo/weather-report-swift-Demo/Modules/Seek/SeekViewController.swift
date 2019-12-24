@@ -8,12 +8,20 @@
 
 import UIKit
 
-class SeekViewController: UIViewController {
-
+class SeekViewController: UIViewController, UISearchBarDelegate {
+    let topSearchBar: UISearchBar = UISearchBar()
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = .red
 
-        // Do any additional setup after loading the view.
+        let mainView = SeekView(frame: self.view.bounds)
+        self.view = mainView
+        mainView.touchStr = {
+            (str: String) -> () in
+            let share = Manager.shared()
+            share.getWeather(str: str)
+            self.dismiss(animated: false, completion: nil)
+        }
     }
     
 
